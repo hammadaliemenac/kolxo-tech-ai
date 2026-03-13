@@ -19,6 +19,6 @@ jobs:
         script: |
           cd /var/www/kolaxo_tech
           git pull origin main
-          source venv/bin/activate
+          source /var/www/kolaxo_tech/venv/bin/activate
           pip install -r requirements.txt
           systemctl reload flaskapp
