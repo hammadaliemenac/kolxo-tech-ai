@@ -14,6 +14,10 @@ def read_root():
 def read_info():
     return {"message": "This is the info endpoint for FastAPI on Ubuntu!"}
 
+@app.get("/info2/")
+def read_info2():
+    return {"message": "This is the second info endpoint for FastAPI on Ubuntu!"}
+
 @app.get("/ai-generator/")
 def read_item(query: str = 'Hello!'):
     response = chat(
