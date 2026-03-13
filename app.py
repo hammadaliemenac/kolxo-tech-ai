@@ -1,22 +1,21 @@
 from ollama import chat
-
-
-
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+# Allow all origins
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # <- allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],   # <- allows all HTTP methods
+    allow_headers=["*"],   # <- allows all headers
+)
 
 @app.get("/")
 def read_root():
     return {"message": "Hello FastAPI on Ubuntu!"}
-
-@app.get("/info/")
-def read_info():
-    return {"message": "This is the info endpoint for FastAPI on Ubuntu!"}
-
-@app.get("/info2/")
-def read_info2():
-    return {"message": "This is the second info endpoint for FastAPI on Ubuntu!"}
 
 @app.get("/ai-generator/")
 def read_item(query: str = 'Hello!'):
