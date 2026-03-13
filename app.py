@@ -3,11 +3,19 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-
+origins = [
+    "*",
+    "http://localhost",
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:5500"
+]
 # Allow all origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # <- allows all origins
+    allow_origins=origins,  # <- allows all origins
     allow_credentials=False,
     allow_methods=["*"],   # <- allows all HTTP methods
     allow_headers=["*"],   # <- allows all headers
