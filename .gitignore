@@ -3,6 +3,10 @@ venv/
 .env/
 .env
 
+# Ollama files
+.ollama
+.ollama/
+
 # Python cache
 __pycache__/
 *.pyc
