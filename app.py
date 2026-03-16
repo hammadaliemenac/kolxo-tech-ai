@@ -1,6 +1,7 @@
 from ollama import chat
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 app = FastAPI()
 origins = [
@@ -25,6 +26,28 @@ app.add_middleware(
 @app.get("/")
 def read_root():
     return {"message": "Hello FastAPI on Ubuntu!"}
+
+# Define a Pydantic model for the request body
+class QueryRequest(BaseModel):
+    query: str,
+    meta_type: str
+    
+@app.post("/meta-tag-generator/")
+def read_item(request: QueryRequest):
+    if request.meta_type == 'meta_title':
+        prompt = f"Generate a meta title for the following query: {request.query} . Maximum 70 characters & Return only the final meta title."
+    elif request.meta_type == 'meta_description':
+        prompt = f"Generate a meta description for the following query: {request.query} . Maximum 160 characters & Return only the final meta description."
+    elif request.meta_type == 'meta_keywords':
+        prompt = f"Generate meta keywords for the following query: {request.query} . Separate each keyword with a comma & Return only the final meta keywords."
+    else:
+        return {"error": "Invalid meta_type. Must be 'meta_title', 'meta_description', or 'meta_keywords'."}
+
+    response = chat(
+        model='tinyllama',
+        messages=[{'role': 'user', 'content': request.query}],
+    )
+    return {"query": request.query, "content": response.message.content}
 
 @app.get("/ai-generator/")
 def read_item(query: str = 'Hello!'):
