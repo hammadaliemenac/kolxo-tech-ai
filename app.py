@@ -3,6 +3,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+# Means and SentenceTransformer imports for potential future use in clustering keywords
+from sklearn.cluster import KMeans
+from sentence_transformers import SentenceTransformer
+
+
 app = FastAPI()
 origins = [
     "http://localhost",
@@ -56,12 +61,24 @@ class ClusterKeywordsRequest(BaseModel):
 
 @app.post("/cluster-keywords/")
 def cluster_keywords(request: ClusterKeywordsRequest):
-    prompt = f"Cluster the following keywords into groups based on their similarity: {request.query} . Return only the final clusters with each cluster as a list of keywords."
-    response = chat(
-        model='tinyllama',
-        messages=[{'role': 'user', 'content': prompt}],
-    )
-    return {"query": request.query, "content": response.message.content}
+    keywords = request.query.split(',')  # keywords are comma-separated
+
+    # Convert keywords to embeddings (vectors)
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+    embeddings = model.encode(keywords)
+
+    # Choose number of clusters
+    num_clusters = 2
+    kmeans = KMeans(n_clusters=num_clusters, random_state=42)
+    kmeans.fit(embeddings)
+    labels = kmeans.labels_
+
+    # Print cluster results
+    clusters = {}
+    for keyword, label in zip(keywords, labels):
+        clusters.setdefault(label, []).append(keyword)
+        
+    return {"query": request.query, "clusters": clusters}
 
 
 @app.get("/ai-generator/")
