@@ -29,7 +29,7 @@ def read_root():
 
 # Define a Pydantic model for the request body
 class QueryRequest(BaseModel):
-    query: str,
+    query: str
     meta_type: str
     
 @app.post("/meta-tag-generator/")
