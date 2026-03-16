@@ -28,12 +28,12 @@ def read_root():
     return {"message": "Hello FastAPI on Ubuntu!"}
 
 # Define a Pydantic model for the request body
-class QueryRequest(BaseModel):
+class QueryMetaTagsRequest(BaseModel):
     query: str
     meta_type: str
     
 @app.post("/meta-tag-generator/")
-def read_item(request: QueryRequest):
+def tag_generator(request: QueryMetaTagsRequest):
     if request.meta_type == 'meta_title':
         prompt = f"Generate a meta title for the following query: {request.query} . Maximum 70 characters & Return only the final meta title."
     elif request.meta_type == 'meta_description':
@@ -48,6 +48,21 @@ def read_item(request: QueryRequest):
         messages=[{'role': 'user', 'content': request.query}],
     )
     return {"query": request.query, "content": response.message.content}
+
+# Define a Pydantic model for the request body
+
+class ClusterKeywordsRequest(BaseModel):
+    query: str
+
+@app.post("/cluster-keywords/")
+def cluster_keywords(request: ClusterKeywordsRequest):
+    prompt = f"Cluster the following keywords into groups based on their similarity: {request.query} . Return only the final clusters with each cluster as a list of keywords."
+    response = chat(
+        model='tinyllama',
+        messages=[{'role': 'user', 'content': prompt}],
+    )
+    return {"query": request.query, "content": response.message.content}
+
 
 @app.get("/ai-generator/")
 def read_item(query: str = 'Hello!'):
