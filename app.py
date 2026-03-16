@@ -1,3 +1,4 @@
+import math
 from ollama import chat
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -6,6 +7,7 @@ from pydantic import BaseModel
 # Means and SentenceTransformer imports for potential future use in clustering keywords
 from sklearn.cluster import KMeans
 from sentence_transformers import SentenceTransformer
+model = SentenceTransformer('all-MiniLM-L6-v2')
 
 
 app = FastAPI()
@@ -56,31 +58,54 @@ def tag_generator(request: QueryMetaTagsRequest):
 
 # Define a Pydantic model for the request body
 
+
 class ClusterKeywordsRequest(BaseModel):
     query: str
 
 @app.post("/cluster-keywords/")
+@app.post("/cluster-keywords/")
 def cluster_keywords(request: ClusterKeywordsRequest):
-    keywords = request.query.split(',')  # keywords are comma-separated
 
-    # Convert keywords to embeddings (vectors)
-    model = SentenceTransformer('all-MiniLM-L6-v2')
+    keywords = [k.strip() for k in request.query.split(",") if k.strip()]
+
+    if len(keywords) == 0:
+        return {"error": "No keywords provided"}
+
     embeddings = model.encode(keywords)
 
-    # Choose number of clusters
-    num_clusters = 2
+    # Auto cluster detection
+    num_clusters = min(len(keywords), max(1, int(math.sqrt(len(keywords)))))
+
     kmeans = KMeans(n_clusters=num_clusters, random_state=42)
-    kmeans.fit(embeddings)
-    labels = kmeans.labels_
 
-    # Print cluster results
+    labels = kmeans.fit_predict(embeddings).tolist()
+
     clusters = {}
+
+    # create clusters
     for keyword, label in zip(keywords, labels):
-        clusters.setdefault(label, []).append(keyword)
-        
-    return {"query": request.query, "clusters": clusters}
+        clusters.setdefault(int(label), []).append(keyword)
 
+    # add cluster names
+    named_clusters = []
 
+    for cluster_id, kw_list in clusters.items():
+
+        # choose shortest keyword as cluster name
+        cluster_name = min(kw_list, key=len)
+
+        named_clusters.append({
+            "cluster_id": cluster_id,
+            "cluster_name": cluster_name,
+            "keywords": kw_list
+        })
+
+    return {
+        "query": request.query,
+        "clusters": named_clusters
+    }
+
+    
 @app.get("/ai-generator/")
 def read_item(query: str = 'Hello!'):
     response = chat(
