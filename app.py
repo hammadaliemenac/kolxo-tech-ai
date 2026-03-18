@@ -153,7 +153,7 @@ def read_item(request: PrivacyPolicyRequest):
         model='tinyllama',
         messages=[{'role': 'user', 'content': prompt}],
     )
-    return {"query": request.query, "content": response.message.content}
+    return {"query": request.policy_name, "content": response.message.content}
 
 # AI Generator Endpoint
 @app.get("/ai-generator/")
