@@ -5,3 +5,8 @@ ollama
 pandas
 scikit-learn
 sentence-transformers
+python-docx
+python-multipart
+duckduckgo-search
+language-tool-python
+textstat
