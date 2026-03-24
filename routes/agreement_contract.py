@@ -22,6 +22,7 @@ class ContractRequest(BaseModel):
     party_b: str
     contract_type: str
     query: str
+    
 def generate_contract(request: ContractRequest):
     prompt = f"""Generate a legal contract based on the following details:
     Party A: {request.party_a}
