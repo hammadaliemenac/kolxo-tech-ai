@@ -17,7 +17,12 @@ def generate_agreement(request: AgreementRequest):
     return {"query": request.query, "content": response.message.content}
 
 @router.post("/generate-contract")
-def generate_contract(request: AgreementRequest):
+class ContractRequest(BaseModel):
+    party_a: str
+    party_b: str
+    contract_type: str
+    query: str
+def generate_contract(request: ContractRequest):
     prompt = f"""Generate a legal contract based on the following details:
     Party A: {request.party_a}
     Party B: {request.party_b}
