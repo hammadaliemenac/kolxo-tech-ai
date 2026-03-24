@@ -10,3 +10,5 @@ python-multipart
 ddgs
 language-tool-python
 textstat
+rembg 
+pillow
