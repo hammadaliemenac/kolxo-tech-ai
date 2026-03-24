@@ -7,6 +7,6 @@ scikit-learn
 sentence-transformers
 python-docx
 python-multipart
-duckduckgo-search
+ddgs
 language-tool-python
 textstat

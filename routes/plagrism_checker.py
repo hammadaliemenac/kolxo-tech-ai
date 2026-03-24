@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 from sklearn.metrics.pairwise import cosine_similarity
-from duckduckgo_search import DDGS
+from ddgs import DDGS
 import textstat
 import math
 import re
@@ -85,7 +85,7 @@ def search_web(query):
 
     try:
         with DDGS() as ddgs:
-            for r in ddgs.text(query, region='us-en', safesearch='Off', timelimit='y', max_results=5):
+            for r in ddgs.text(query, max_results=5):
                 title = r.get('title', '')
                 body = r.get('body', '')
 
@@ -105,7 +105,6 @@ async def search_all_queries(sentence):
     tasks = [loop.run_in_executor(None, search_web, sentence)]
 
     results = await asyncio.gather(*tasks)
-    print(f"Search results for '{sentence}': {results}")  # Debugging log
     # flatten results
     flat = [item for sublist in results for item in sublist]
     return list(set(flat))  # remove duplicates
@@ -147,7 +146,7 @@ async def check_plagiarism(request: PlagiarismCheckRequest):
 
         output.append({
             "sentence": sentence,
-            "score": round(max_score * 100, 2),
+            "score": round(max_score * 100),
             "level": label,
             "matches": [
                 {"text": web_results[i], "similarity": round(max_score * 100, 2)}
@@ -169,7 +168,7 @@ async def check_plagiarism(request: PlagiarismCheckRequest):
         "query": text,
         "results": {
             "plagiarism_results": output,
-            "plagiarism_score": plagiarism_score,
+            "plagiarism_score": round(plagiarism_score),
             **text_analysis
         }
     }
