@@ -158,17 +158,66 @@ async def check_plagiarism(request: PlagiarismCheckRequest):
     # 🔹 FINAL SCORE
     # -------------------------------
     plagiarism_score = (
-        round(sum([r["score"] for r in output]) / len(output), 2)
+        round(sum([r["score"] for r in output]) / len(output))
         if output else 0
     )
 
     text_analysis = analyze_text(text)
 
-    return {
-        "query": text,
-        "results": {
-            "plagiarism_results": output,
-            "plagiarism_score": round(plagiarism_score),
-            **text_analysis
-        }
-    }
+    return format_response_html(text, output, plagiarism_score, text_analysis)
+
+def format_response_html(text, output, plagiarism_score, text_analysis):
+    # Extract analysis
+    grammar = text_analysis.get("grammar_errors", 0)
+    spelling = text_analysis.get("spelling_errors", 0)
+    punctuation = text_analysis.get("punctuation_errors", 0)
+    readability_score = text_analysis.get("readability_score", 0)
+    conciseness_score = text_analysis.get("conciseness_score", 0)
+
+    # Determine issue counts for conciseness/readability
+    readability_issues = 0 if readability_score >= 50 else 5
+    conciseness_issues = 0 if conciseness_score >= 80 else 5
+
+    # Total issues
+    total_issues = grammar + punctuation + conciseness_issues
+
+    # Helper to decide status HTML
+    def issue_html(name, count):
+        if count == 0:
+            return f"""
+            <div class="issue-content">
+                <span>{name}</span>
+                <span class="true">
+                    <img src="http://localhost/hammad/kolaxo_tech/theme/assets/img/icons/tick-bold.svg" alt="tick-bold" width="13" height="13">
+                </span>
+            </div>
+            """
+        else:
+            return f"""
+            <div class="issue-content">
+                <span>{name}</span>
+                <span class="error">{count}</span>
+            </div>
+            """
+
+    # Build HTML
+    html = f"""
+    <div class="d-flex align-items-center justify-content-start issue-text">
+        <span class="issue-number">{total_issues}</span>
+        <span>We found {total_issues} writing issues.</span>
+    </div>
+    <div class="row gx-3 gx-sm-4 gx-xl-5">
+        <div class="col-6">
+            {issue_html("No plagiarism found", 0) if plagiarism_score < 10 else issue_html("Plagiarism detected", plagiarism_score)}
+            {issue_html("Grammar", grammar)}
+            {issue_html("Spelling", spelling)}
+            {issue_html("Punctuation", punctuation)}
+        </div>
+        <div class="col-6">
+            {issue_html("Conciseness", conciseness_issues)}
+            {issue_html("Readability", readability_issues)}
+            {issue_html("Word choice", 0)}
+        </div>
+    </div>
+    """
+    return html
