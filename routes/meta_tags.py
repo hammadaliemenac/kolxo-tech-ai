@@ -12,66 +12,65 @@ class QueryMetaTagsRequest(BaseModel):
 def tag_generator(request: QueryMetaTagsRequest):
     if request.meta_type == 'meta_title':
         prompt = f"""
-You are an SEO assistant.
+            You are an SEO assistant.
 
-Task: Generate a meta title.
+            Task: Generate a meta title.
 
-Rules:
-- Maximum 70 characters
-- No explanations
-- No quotes
-- No prefixes or labels
-- Output ONLY the final result
+            Rules:
+            - Maximum 70 characters
+            - No explanations
+            - No quotes
+            - No prefixes or labels
+            - Output ONLY the final result
 
-Query: {request.query}
+            Query: {request.query}
 
-Output:
-"""
+            Output:
+            """
 
     elif request.meta_type == 'meta_description':
         prompt = f"""
-You are an SEO assistant.
+            You are an SEO assistant.
 
-Task: Generate a meta description.
+            Task: Generate a meta description.
 
-Rules:
-- Maximum 160 characters
-- No explanations
-- No quotes
-- No prefixes or labels
-- Output ONLY the final result
+            Rules:
+            - Maximum 160 characters
+            - No explanations
+            - No quotes
+            - No prefixes or labels
+            - Output ONLY the final result
 
-Query: {request.query}
+            Query: {request.query}
 
-Output:
-"""
+            Output:
+            """
 
     elif request.meta_type == 'meta_keywords':
         prompt = f"""
-You are an SEO assistant.
+            You are an SEO assistant.
 
-Task: Generate meta keywords.
+            Task: Generate meta keywords.
 
-Rules:
-- Comma-separated keywords
-- No explanations
-- No numbering
-- No quotes
-- Output ONLY the final result
+            Rules:
+            - Comma-separated keywords
+            - No explanations
+            - No numbering
+            - No quotes
+            - Output ONLY the final result
 
-Query: {request.query}
+            Query: {request.query}
 
-Output:
-"""
+            Output:
+            """
 
     else:
         return {"error": "Invalid meta_type. Must be 'meta_title', 'meta_description', or 'meta_keywords'."}
 
-    return prompt
 
     response = chat(
         model='tinyllama',
-        messages=[{'role': 'user', 'content': request.query}],
+        messages=[{'role': 'user', 'content': prompt}],
         stop=["\n", "Explanation:", "Note:"]
     )
     return {"query": request.query, "content": response.message.content}
