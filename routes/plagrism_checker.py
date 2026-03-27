@@ -214,15 +214,12 @@ def format_response_html(text, output, plagiarism_score, text_analysis):
     <div class="d-flex align-items-center justify-content-start { "issue-text" if plagiarism_score < 10 else "success-text" }">
         <span class="issue-number">{plagiarism_score}%</span>
         <span>
-            { "✅ No plagiarism detected! Your text looks original." if plagiarism_score < 10 
-                else "⚠️ Plagiarism detected! Some parts of your text may not be original." }<br>
-            We analyzed your text and found <strong>{total_issues}</strong> writing issue{'' if total_issues == 1 else 's'}.<br>
-            { "Great job! Your writing is clear and mostly error-free." if total_issues == 0 
-                else "Consider reviewing the highlighted issues to improve clarity, grammar, and readability." }<br>
-            { "Tip: Keep sentences concise, check spelling, and ensure proper citations for originality." }
+            { "No plagiarism detected! Your text looks original." if plagiarism_score < 10 
+                else "Plagiarism detected! Some parts of your text may not be original." }
+            We analyzed your text and found <strong>{total_issues}</strong> writing issue{'' if total_issues == 1 else 's'}.
         </span>
     </div>
-    <div class="row gx-3 gx-sm-4 gx-xl-5">
+    <div class="row gx-3 gx-sm-4 gx-xl-5 mt-3">
         <div class="col-6">
             {issue_html("Grammar", grammar)}
             {issue_html("Spelling", spelling)}
