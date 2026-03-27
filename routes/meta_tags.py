@@ -78,4 +78,5 @@ def tag_generator(request: QueryMetaTagsRequest):
             "stop": ["\n", "Explanation:", "Note:", "Output:", "Here is"]
         }
     )
-    return {"query": request.query, "content": response.message.content}
+    return response
+    # return {"query": request.query, "content": response.message.content}
