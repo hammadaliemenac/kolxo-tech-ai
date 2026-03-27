@@ -10,15 +10,7 @@ from routes.agreement_contract import router as agreement_contract_router
 from routes.remove_bg import router as remove_bg_router
 
 app = FastAPI()
-origins = [
-    "http://localhost",
-    "http://localhost/",
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "http://127.0.0.1",
-    "http://127.0.0.1/",
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:5500"
+origins = ["*"
 ]
 # Allow all origins
 app.add_middleware(
