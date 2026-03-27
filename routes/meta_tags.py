@@ -69,7 +69,7 @@ def tag_generator(request: QueryMetaTagsRequest):
 
 
     response = generate(
-        model='tinyllama',
+        model='llama3',
         prompt=prompt
     )
     return response
