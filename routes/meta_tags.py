@@ -70,13 +70,8 @@ def tag_generator(request: QueryMetaTagsRequest):
 
     response = chat(
         model='tinyllama',
-        messages=[{'role': 'user', 'content': prompt}],
+        prompt=prompt,
         stop=["\n", "Explanation:", "Note:"],
-        options={
-            "temperature": 0.2,
-            "num_predict": 80,
-            "top_p": 0.9,
-            "stop": ["\n", "Explanation:", "Note:", "Output:", "Here is"]
-        }
+    
     )
     return {"query": request.query, "content": response.message.content}
