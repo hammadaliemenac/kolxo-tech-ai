@@ -70,13 +70,7 @@ def tag_generator(request: QueryMetaTagsRequest):
 
     response = generate(
         model='tinyllama',
-        prompt=prompt,
-        options={
-            "temperature": 0.2,
-            "num_predict": 80,
-            "top_p": 0.9,
-            "stop": ["\n", "Explanation:", "Note:", "Output:", "Here is"]
-        }
+        prompt=prompt
     )
     return response
     # return {"query": request.query, "content": response.message.content}
