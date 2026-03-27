@@ -17,6 +17,7 @@ def tag_generator(request: QueryMetaTagsRequest):
             Task: Generate a meta title.
 
             Rules:
+            - Minimum 60 characters
             - Maximum 70 characters
             - No explanations
             - No quotes
@@ -35,7 +36,8 @@ def tag_generator(request: QueryMetaTagsRequest):
             Task: Generate a meta description.
 
             Rules:
-            - Maximum 160 characters
+            - Maximum 250 characters
+            - Minimum 160 characters
             - No explanations
             - No quotes
             - No prefixes or labels
