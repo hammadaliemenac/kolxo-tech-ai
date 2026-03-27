@@ -25,6 +25,15 @@ class PlagiarismCheckRequest(BaseModel):
 # 🔹 TEXT ANALYSIS
 # -------------------------------
 def analyze_text(text):
+    if not tool:
+        return {
+            "grammar_errors": 0,
+            "spelling_errors": 0,
+            "punctuation_errors": 0,
+            "readability_score": 0,
+            "conciseness_score": 0
+        }
+        
     matches = tool.check(text)
 
     grammar_errors = 0
