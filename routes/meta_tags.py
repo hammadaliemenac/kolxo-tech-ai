@@ -11,11 +11,11 @@ class QueryMetaTagsRequest(BaseModel):
 @router.post("/meta-tag-generator/")
 def tag_generator(request: QueryMetaTagsRequest):
     if request.meta_type == 'meta_title':
-        prompt = f"Generate a SEO based meta title for the following query: {request.query} . Maximum 70 characters & Return only the final meta title."
+        prompt = f"Generate a SEO based meta title for the following query: {request.query} . Maximum 70 characters & Return only the final meta title. ignore the last chatgpt response and generate a new one based on the above prompt."
     elif request.meta_type == 'meta_description':
-        prompt = f"Generate a SEO based meta description for the following query: {request.query} . Maximum 160 characters & Return only the final meta description."
+        prompt = f"Generate a SEO based meta description for the following query: {request.query} . Maximum 160 characters & Return only the final meta description. ignore the last chatgpt response and generate a new one based on the above prompt."
     elif request.meta_type == 'meta_keywords':
-        prompt = f"Generate SEO based meta keywords for the following query: {request.query} . Separate each keyword with a comma & Return only the final meta keywords."
+        prompt = f"Generate SEO based meta keywords for the following query: {request.query} . Separate each keyword with a comma & Return only the final meta keywords. ignore the last chatgpt response and generate a new one based on the above prompt."
     else:
         return {"error": "Invalid meta_type. Must be 'meta_title', 'meta_description', or 'meta_keywords'."}
 
