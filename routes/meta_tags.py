@@ -73,10 +73,10 @@ def tag_generator(request: QueryMetaTagsRequest):
         messages=[{'role': 'user', 'content': prompt}],
         stop=["\n", "Explanation:", "Note:"],
         options={
-            "temperature": 0.2,      # less randomness
-            "num_predict": 80,       # limit output length
-            "top_p": 0.9
-        },
-        stop=["\n", "Explanation:", "Note:", "Here is", "Output:"]
+            "temperature": 0.2,
+            "num_predict": 80,
+            "top_p": 0.9,
+            "stop": ["\n", "Explanation:", "Note:", "Output:", "Here is"]
+        }
     )
     return {"query": request.query, "content": response.message.content}
