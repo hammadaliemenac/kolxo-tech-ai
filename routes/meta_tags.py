@@ -72,5 +72,5 @@ def tag_generator(request: QueryMetaTagsRequest):
         model='llama3',
         prompt=prompt
     )
-    return response
-    # return {"query": request.query, "content": response.message.content}
+
+    return {"query": request.query, "content": response.response}
