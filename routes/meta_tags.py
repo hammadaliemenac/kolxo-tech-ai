@@ -11,16 +11,67 @@ class QueryMetaTagsRequest(BaseModel):
 @router.post("/meta-tag-generator/")
 def tag_generator(request: QueryMetaTagsRequest):
     if request.meta_type == 'meta_title':
-        prompt = f"Generate a SEO based meta title for the following query: {request.query} . Maximum 70 characters & Return only the final meta title. ignore the last chatgpt response and generate a new one based on the above prompt."
+        prompt = f"""
+You are an SEO assistant.
+
+Task: Generate a meta title.
+
+Rules:
+- Maximum 70 characters
+- No explanations
+- No quotes
+- No prefixes or labels
+- Output ONLY the final result
+
+Query: {request.query}
+
+Output:
+"""
+
     elif request.meta_type == 'meta_description':
-        prompt = f"Generate a SEO based meta description for the following query: {request.query} . Maximum 160 characters & Return only the final meta description. ignore the last chatgpt response and generate a new one based on the above prompt."
+        prompt = f"""
+You are an SEO assistant.
+
+Task: Generate a meta description.
+
+Rules:
+- Maximum 160 characters
+- No explanations
+- No quotes
+- No prefixes or labels
+- Output ONLY the final result
+
+Query: {request.query}
+
+Output:
+"""
+
     elif request.meta_type == 'meta_keywords':
-        prompt = f"Generate SEO based meta keywords for the following query: {request.query} . Separate each keyword with a comma & Return only the final meta keywords. ignore the last chatgpt response and generate a new one based on the above prompt."
+        prompt = f"""
+You are an SEO assistant.
+
+Task: Generate meta keywords.
+
+Rules:
+- Comma-separated keywords
+- No explanations
+- No numbering
+- No quotes
+- Output ONLY the final result
+
+Query: {request.query}
+
+Output:
+"""
+
     else:
         return {"error": "Invalid meta_type. Must be 'meta_title', 'meta_description', or 'meta_keywords'."}
+
+    return prompt
 
     response = chat(
         model='tinyllama',
         messages=[{'role': 'user', 'content': request.query}],
+        stop=["\n", "Explanation:", "Note:"]
     )
     return {"query": request.query, "content": response.message.content}
