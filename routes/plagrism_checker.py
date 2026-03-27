@@ -33,7 +33,7 @@ def analyze_text(text):
             "readability_score": 0,
             "conciseness_score": 0
         }
-        
+
     matches = tool.check(text)
 
     grammar_errors = 0
@@ -211,13 +211,12 @@ def format_response_html(text, output, plagiarism_score, text_analysis):
 
     # Build HTML
     html = f"""
-    <div class="d-flex align-items-center justify-content-start issue-text">
-        <span class="issue-number">{total_issues}</span>
-        <span>We found {total_issues} writing issues.</span>
+    <div class="d-flex align-items-center justify-content-start { "issue-text" if plagiarism_score < 10 else "success-text" }">
+        <span class="issue-number">{plagiarism_score}%</span>
+        <span> {issue_html("No plagiarism found", 0) if plagiarism_score < 10 else issue_html("Plagiarism detected", plagiarism_score)}. We found {total_issues} writing issues.</span>
     </div>
     <div class="row gx-3 gx-sm-4 gx-xl-5">
         <div class="col-6">
-            {issue_html("No plagiarism found", 0) if plagiarism_score < 10 else issue_html("Plagiarism detected", plagiarism_score)}
             {issue_html("Grammar", grammar)}
             {issue_html("Spelling", spelling)}
             {issue_html("Punctuation", punctuation)}
