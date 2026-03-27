@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from ollama import chat
+from ollama import generate
 
 router = APIRouter()
 
@@ -68,7 +68,7 @@ def tag_generator(request: QueryMetaTagsRequest):
         return {"error": "Invalid meta_type. Must be 'meta_title', 'meta_description', or 'meta_keywords'."}
 
 
-    response = chat(
+    response = generate(
         model='tinyllama',
         prompt=prompt,
         options={
