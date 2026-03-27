@@ -213,7 +213,7 @@ def format_response_html(text, output, plagiarism_score, text_analysis):
     html = f"""
     <div class="d-flex align-items-center justify-content-start { "issue-text" if plagiarism_score < 10 else "success-text" }">
         <span class="issue-number">{plagiarism_score}%</span>
-        <span> {issue_html("No plagiarism found", 0) if plagiarism_score < 10 else issue_html("Plagiarism detected", plagiarism_score)}. We found {total_issues} writing issues.</span>
+        <span> {"No plagiarism found" if plagiarism_score < 10 else "Plagiarism detected"}. We found {total_issues} writing issues.</span>
     </div>
     <div class="row gx-3 gx-sm-4 gx-xl-5">
         <div class="col-6">
