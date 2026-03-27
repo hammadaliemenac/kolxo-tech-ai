@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from ollama import chat
+from ollama import chat, generate
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -32,8 +32,8 @@ def generate_contract(request: ContractRequest):
         Description: {request.query}
         Return only the final contract without any explanations."""
 
-    response = chat(
-        model='tinyllama',
-        messages=[{'role': 'user', 'content': prompt}],
+    response = generate(
+        model='llama3',
+        prompt=prompt
     )
-    return {"query": request.query, "content": response.message.content}
+    return {"query": request.query, "content": response.response}

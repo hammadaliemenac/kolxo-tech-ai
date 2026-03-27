@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from ollama import chat
+from ollama import generate
 from pydantic import BaseModel
 router = APIRouter()
 
@@ -48,8 +48,8 @@ def read_item(request: PrivacyPolicyRequest):
     prompt += f"Do you want to notify users of policy updates: {request.data_updates}\n"
     prompt += f"Please write the privacy policy in clear and formal {request.content_language} language, ensuring that it includes necessary data protection clauses and complies with relevant laws like GDPR and CCPA."
 
-    response = chat(
-        model='tinyllama',
-        messages=[{'role': 'user', 'content': prompt}],
+    response = generate(
+        model='llama3',
+        prompt=prompt
     )
-    return {"query": request.policy_name, "content": response.message.content}
+    return {"query": request.policy_name, "content": response.response}
