@@ -6,7 +6,10 @@ import textstat
 import math
 import re
 import asyncio
-from utils import model, tool
+from utils import model
+import language_tool_python
+
+tool = language_tool_python.LanguageTool('en-US')
 
 
 def sent_tokenize(text):
