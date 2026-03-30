@@ -170,8 +170,8 @@ def format_response_html(text, output, plagiarism_score, text_analysis):
     conciseness_score = text_analysis.get("conciseness_score", 0)
 
     # Determine issue counts for conciseness/readability
-    readability_issues = 0 if readability_score >= 50 else 5
-    conciseness_issues = 0 if conciseness_score >= 80 else 5
+    readability_issues = readability_score
+    conciseness_issues = conciseness_score
 
     # Total issues
     total_issues = grammar + punctuation + conciseness_issues
