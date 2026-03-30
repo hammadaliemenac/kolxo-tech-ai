@@ -26,6 +26,7 @@ class PlagiarismCheckRequest(BaseModel):
 # -------------------------------
 def analyze_text(text):
     if not tool:
+        print("Language tool not initialized")
         return {
             "grammar_errors": 0,
             "spelling_errors": 0,
@@ -41,11 +42,13 @@ def analyze_text(text):
     punctuation_errors = 0
 
     for match in matches:
-        if match.rule_issue_type == 'misspelling':
+        issue = str(match.rule_issue_type).lower()
+
+        if 'misspelling' in issue:
             spelling_errors += 1
-        elif match.rule_issue_type == 'grammar':
+        elif 'grammar' in issue:
             grammar_errors += 1
-        elif match.rule_issue_type == 'typographical':
+        elif 'typographical' in issue:
             punctuation_errors += 1
 
     readability_score = textstat.flesch_reading_ease(text)
@@ -63,8 +66,6 @@ def analyze_text(text):
         "readability_score": round(readability_score),
         "conciseness_score": round(conciseness_score)
     }
-
-
 # -------------------------------
 # 🔹 HELPERS
 # -------------------------------
