@@ -178,7 +178,7 @@ def format_response_html(text, output, plagiarism_score, text_analysis):
 
     # Helper to decide status HTML
     def issue_html(name, count):
-         return f"""
+        return f"""
         <div class="issue-content">
             <span>{name}</span>
             <span class="error">{count}</span>
