@@ -182,22 +182,22 @@ def format_response_html(text, output, plagiarism_score, text_analysis):
 
     # Helper to decide status HTML
     def issue_html(name, count):
-        return f"""
-        <div class="issue-content">
-            <span>{name}</span>
-            <span class="error">{count}</span>
-        </div>
-        """
-        # if count == 0:
-        #     return f"""
-        #     <div class="issue-content">
-        #         <span>{name}</span>
-        #         <span class="true">
-        #             ✔
-        #         </span>
-        #     </div>
-        #     """
-        # else:
+        if count == 0:
+            return f"""
+            <div class="issue-content">
+                <span>{name}</span>
+                <span class="true">
+                    ✔
+                </span>
+            </div>
+            """
+        else:
+            return f"""
+            <div class="issue-content">
+                <span>{name}</span>
+                <span class="error">{count}</span>
+            </div>
+            """
        
 
     # Build HTML
