@@ -4,19 +4,26 @@ from rembg import remove, new_session
 from PIL import Image
 import io
 
-session = new_session()
+session = new_session("isnet-general-use")
 router = APIRouter()
 
 @router.post("/remove-bg")
 async def remove_bg(file: UploadFile = File(...)):
-    # Read uploaded image
     input_bytes = await file.read()
 
-    # Remove background
-    output_bytes = remove(input_bytes, session=session)
+    input_image = Image.open(io.BytesIO(input_bytes)).convert("RGB")
 
-    # Return as image
-    return StreamingResponse(
-        io.BytesIO(output_bytes),
-        media_type="image/png"
+    output = remove(
+        input_image,
+        session=session,
+        alpha_matting=True,
+        alpha_matting_foreground_threshold=240,
+        alpha_matting_background_threshold=10,
+        alpha_matting_erode_size=10
     )
+
+    buf = io.BytesIO()
+    output.save(buf, format="PNG")
+    buf.seek(0)
+
+    return StreamingResponse(buf, media_type="image/png")
