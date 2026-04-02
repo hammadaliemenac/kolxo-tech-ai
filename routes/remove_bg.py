@@ -4,8 +4,8 @@ from rembg import remove, new_session
 from PIL import Image
 import io
 
-# session = new_session("isnet-general-use")
-session = new_session("u2net_human_seg")
+session = new_session("isnet-general-use")
+# session = new_session("u2net_human_seg")
 router = APIRouter()
 
 @router.post("/remove-bg")
