@@ -46,7 +46,7 @@ def read_item(request: PrivacyPolicyRequest):
     prompt += f"Do you want to add a response time for data breach notifications: {request.data_breach}\n"
     prompt += f"Do you require opt-in for material changes: {request.data_policy}\n"
     prompt += f"Do you want to notify users of policy updates: {request.data_updates}\n"
-    prompt += f"Please write the privacy policy in clear and formal {request.content_language} language, ensuring that it includes necessary data protection clauses and complies with relevant laws like GDPR and CCPA."
+    prompt += f"Please write the privacy policy in clear and formal {request.content_language} language, ensuring that it includes necessary data protection clauses and complies with relevant laws like GDPR and CCPA. Make sure to cover all the aspects mentioned above in a comprehensive manner. The policy should be structured with appropriate headings and sections for easy readability. The respounse should be in simple text format without any HTML tags or formatting."
 
     response = generate(
         model='llama3',
