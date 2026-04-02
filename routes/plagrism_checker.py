@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, File, UploadFile, HTTPException
 from pydantic import BaseModel
 from sklearn.metrics.pairwise import cosine_similarity
 from ddgs import DDGS
@@ -224,3 +224,28 @@ def format_response_html(text, output, plagiarism_score, text_analysis):
     </div>
     """
     return html
+
+# -------------------------------
+# 🔹 DOCUMENT EXTRACTION
+# -------------------------------
+@router.post("/extract-docs-text")
+async def extract_docs_text(file: UploadFile = File(...)):
+    filename = file.filename.lower()
+    if not (filename.endswith('.txt') or filename.endswith('.docx') or filename.endswith('.doc')):
+        raise HTTPException(status_code=400, detail="Only text and Word files (.txt, .docx) are accepted.")
+    
+    try:
+        content = await file.read()
+        extracted_text = ""
+        
+        if filename.endswith('.txt'):
+            extracted_text = content.decode('utf-8')
+        elif filename.endswith('.docx') or filename.endswith('.doc'):
+            import io
+            import docx
+            doc = docx.Document(io.BytesIO(content))
+            extracted_text = "\n".join([para.text for para in doc.paragraphs])
+            
+        return {"filename": file.filename, "text": extracted_text.strip()}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to extract text from file: {str(e)}")

@@ -8,6 +8,7 @@ from routes.plagrism_checker import router as plagiarism_checker_router
 from routes.privacy_policy_generator import router as privacy_policy_generator_router
 from routes.agreement_contract import router as agreement_contract_router
 from routes.remove_bg import router as remove_bg_router
+from routes.seo_checker import router as seo_checker_router
 
 app = FastAPI()
 origins = ["*"
@@ -33,3 +34,4 @@ app.include_router(plagiarism_checker_router)
 app.include_router(privacy_policy_generator_router)
 app.include_router(agreement_contract_router)
 app.include_router(remove_bg_router)
+app.include_router(seo_checker_router)
