@@ -49,7 +49,16 @@ echo "📥 Installing dependencies from requirements.txt..."
 "$VENV_DIR/bin/pip" install --upgrade pip
 "$VENV_DIR/bin/pip" install -r "$APP_DIR/requirements.txt"
 
-# 7. Create Systemd Service
+# 7. Generate SSL Certificates
+echo "🔐 Generating Self-Signed SSL Certificates..."
+if [ ! -f "$APP_DIR/cert.pem" ] || [ ! -f "$APP_DIR/key.pem" ]; then
+    openssl req -x509 -newkey rsa:4096 -keyout "$APP_DIR/key.pem" -out "$APP_DIR/cert.pem" -sha256 -days 3650 -nodes -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=localhost"
+    echo "✅ Certificates generated."
+else
+    echo "✅ Certificates already exist."
+fi
+
+# 8. Create Systemd Service
 echo "⚙️ Creating systemd service: $APP_NAME..."
 SERVICE_FILE="/etc/systemd/system/$APP_NAME.service"
 
@@ -61,7 +70,7 @@ After=network.target ollama.service
 [Service]
 User=$USER
 WorkingDirectory=$APP_DIR
-ExecStart=$VENV_DIR/bin/uvicorn app:app --host 0.0.0.0 --port $PORT
+ExecStart=$VENV_DIR/bin/uvicorn app:app --host 0.0.0.0 --port $PORT --ssl-keyfile $APP_DIR/key.pem --ssl-certfile $APP_DIR/cert.pem
 Restart=always
 Environment=PYTHONPATH=$APP_DIR
 
@@ -69,7 +78,7 @@ Environment=PYTHONPATH=$APP_DIR
 WantedBy=multi-user.target
 EOF
 
-# 8. Reload Systemd and Start Service
+# 9. Reload Systemd and Start Service
 echo "🔄 Reloading systemd and starting service..."
 sudo systemctl daemon-reload
 sudo systemctl enable $APP_NAME
@@ -77,6 +86,6 @@ sudo systemctl restart $APP_NAME
 
 echo "------------------------------------------------"
 echo "✅ Setup Complete!"
-echo "🌐 Your app should be running at http://localhost:$PORT"
+echo "🌐 Your app should be running at https://localhost:$PORT"
 echo "📊 Check status with: sudo systemctl status $APP_NAME"
 echo "------------------------------------------------"
