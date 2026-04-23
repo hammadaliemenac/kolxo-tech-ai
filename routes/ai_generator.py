@@ -113,6 +113,27 @@ Topic: {query}
 
 Output:
 """,
+
+    "pinterest": lambda query: f"""
+You are an expert Social Media Manager specializing in Pinterest content.
+
+Task: Create a complete Pinterest post.
+
+Rules:
+- Length: 200–250 words
+- First 2 lines must be compelling (shown before "Show more") — include primary keyword
+- Include a brief overview of what the video covers (3–5 bullet points with ✅ or 🔹)
+- Add a strong CTA section: Subscribe, Like, Comment, Share
+- Include timestamps placeholder section: e.g., 00:00 - Intro
+- Add social media links placeholder section
+- End with 10–15 SEO-optimized hashtags
+- No explanations, no labels, no prefixes
+- Output ONLY the final description
+
+Topic: {query}
+
+Output:
+""",
 }
 
 @router.post("/post-generator/")
